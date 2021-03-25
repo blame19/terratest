@@ -1,6 +1,7 @@
 package k8s
 
 import (
+	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/testing"
 )
 
@@ -10,6 +11,7 @@ type KubectlOptions struct {
 	ConfigPath  string
 	Namespace   string
 	Env         map[string]string
+	Logger      *logger.Logger // Set a non-default logger that should be used. See the logger package for more info.
 }
 
 // NewKubectlOptions will return a pointer to new instance of KubectlOptions with the configured options
@@ -19,7 +21,13 @@ func NewKubectlOptions(contextName string, configPath string, namespace string) 
 		ConfigPath:  configPath,
 		Namespace:   namespace,
 		Env:         map[string]string{},
+		Logger:      log,
 	}
+}
+
+// SetKubectlOptionsLogger will return a pointer to new instance of KubectlOptions with the configured Logger
+func SetKubectlOptionsLogger(options *KubectlOptions, log *logger.Logger) {
+	options.Logger = log
 }
 
 // GetConfigPath will return a sensible default if the config path is not set on the options.

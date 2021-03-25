@@ -9,7 +9,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/gruntwork-io/terratest/modules/testing"
 )
@@ -77,6 +76,7 @@ func WaitUntilNumPodsCreatedE(
 	retries int,
 	sleepBetweenRetries time.Duration,
 ) error {
+	log := options.Logger
 	statusMsg := fmt.Sprintf("Wait for num pods created to match desired count %d.", desiredCount)
 	message, err := retry.DoWithRetryE(
 		t,
@@ -95,10 +95,10 @@ func WaitUntilNumPodsCreatedE(
 		},
 	)
 	if err != nil {
-		logger.Logf(t, "Timedout waiting for the desired number of Pods to be created: %s", err)
+		log.Logf(t, "Timedout waiting for the desired number of Pods to be created: %s", err)
 		return err
 	}
-	logger.Logf(t, message)
+	log.Logf(t, message)
 	return nil
 }
 
@@ -112,6 +112,7 @@ func WaitUntilPodAvailable(t testing.TestingT, options *KubectlOptions, podName 
 // for the provided duration between each try.
 func WaitUntilPodAvailableE(t testing.TestingT, options *KubectlOptions, podName string, retries int, sleepBetweenRetries time.Duration) error {
 	statusMsg := fmt.Sprintf("Wait for pod %s to be provisioned.", podName)
+	log := options.Logger
 	message, err := retry.DoWithRetryE(
 		t,
 		statusMsg,
@@ -129,10 +130,10 @@ func WaitUntilPodAvailableE(t testing.TestingT, options *KubectlOptions, podName
 		},
 	)
 	if err != nil {
-		logger.Logf(t, "Timedout waiting for Pod to be provisioned: %s", err)
+		log.Logf(t, "Timedout waiting for Pod to be provisioned: %s", err)
 		return err
 	}
-	logger.Logf(t, message)
+	log.Logf(t, message)
 	return nil
 }
 
